@@ -1,0 +1,25 @@
+services:
+  schedule_bot:
+    build: 
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: schedule_bot
+    restart: always
+    env_file:
+      - ../.env
+    depends_on:
+      - schedule_db
+
+  schedule_db:
+    image: postgres:15-alpine
+    container_name: schedule_db
+    restart: always
+    env_file:
+      - ../.env
+    ports:
+      - "5434:5432"
+    volumes:
+      - schedule_db_data:/var/lib/postgresql/data
+
+volumes:
+  schedule_db_data:
