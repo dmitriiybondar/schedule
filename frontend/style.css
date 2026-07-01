@@ -1,0 +1,183 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #13161b;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+}
+
+h3 {
+    color: #FFFFFF;
+}
+
+.calendar {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.calendar_container {
+    display: block;
+}
+
+/* --- ГОЛОВНИЙ КОНТЕЙНЕР --- */
+.flatpickr-calendar {
+    background-color: #212327 !important;
+}
+
+.flatpickr-calendar.inline {
+    border-radius: 15px !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* --- ВЕРХНЯ ПАНЕЛЬ (Заголовок та Стрілки) --- */
+/* Відновлений головний контейнер для стрілок і тексту */
+.flatpickr-months {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    height: 50px !important;
+    width: 100% !important;
+}
+
+.flatpickr-month {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+}
+
+.flatpickr-current-month {
+    position: static !important; 
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    color: #FFFFFF !important;
+    font-size: 1.2em !important;
+    gap: 6px !important; /* Відстань між місяцем і роком */
+}
+
+/* --- ПОЛЕ РОКУ --- */
+.numInputWrapper {
+    display: inline-block !important;
+    width: fit-content !important; 
+    min-width: unset !important;
+}
+
+.numInputWrapper span {
+    display: none !important;
+}
+
+input.cur-year {
+    background: transparent !important;
+    border: none !important;
+    color: #FFFFFF !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+    pointer-events: none !important;
+    width: 48px !important; /* Ідеально під 4 цифри, щоб не зсувати центр */
+    padding: 0 !important;
+    margin: 0 !important;
+    text-align: left !important;
+}
+
+/* --- СТРІЛКИ ГОРТАННЯ --- */
+.flatpickr-prev-month, 
+.flatpickr-next-month {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important; 
+    position: absolute !important; /* Прив'язуємо до країв .flatpickr-months */
+    top: 0 !important; 
+    padding: 0 15px !important;
+    z-index: 3 !important;
+}
+
+.flatpickr-prev-month {
+    left: 0 !important;
+}
+
+.flatpickr-next-month {
+    right: 0 !important;
+}
+
+.flatpickr-prev-month svg, 
+.flatpickr-next-month svg {
+    fill: #FFFFFF !important;
+}
+
+.flatpickr-prev-month:hover svg, 
+.flatpickr-next-month:hover svg {
+    fill: #888c94 !important;
+}
+
+/* --- ДНІ ТИЖНЯ --- */
+.flatpickr-weekday {
+    color: #888c94 !important;
+}
+
+/* --- СІТКА ДАТ --- */
+.flatpickr-day {
+    border: none !important;
+    color: #FFFFFF !important;
+    
+    /* Робимо клітинку квадратною для ідеального кола */
+    height: 39px !important;
+    max-width: 39px !important;
+    line-height: 39px !important;
+    margin: auto !important; /* Центрує кружечок, якщо календар широкий */
+}
+
+/* Дні інших місяців */
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+    color: #626268 !important;
+}
+
+/* Наведення курсора (Hover) */
+.flatpickr-day:not(.flatpickr-disabled):not(.selected):hover {
+    background-color: #383c44 !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+}
+
+/* Заблоковані дати */
+.flatpickr-day.flatpickr-disabled,
+.flatpickr-day.flatpickr-disabled:hover {
+    color: #3e444e !important;
+    background-color: transparent !important;
+    cursor: not-allowed !important;
+}
+
+/* Вибрана дата */
+.flatpickr-day.selected, 
+.flatpickr-day.selected:hover,
+.flatpickr-day.selected:focus,
+.flatpickr-day.selected.prevMonthDay,
+.flatpickr-day.selected.nextMonthDay {
+    background-color: #007bff !important;
+    border-radius: 50% !important;
+    max-width: 39px !important;
+    height: 39px !important;
+    margin: auto !important;
+}
+
+/* Сьогоднішня дата */
+.flatpickr-day.today {
+    border: 1px solid #007bff !important;
+    border-radius: 50% !important;
+}
+
+/* Ховаємо стрілки, коли вони неактивні (на межі діапазону) */
+.flatpickr-prev-month.flatpickr-disabled, 
+.flatpickr-next-month.flatpickr-disabled {
+    display: none !important;
+}
