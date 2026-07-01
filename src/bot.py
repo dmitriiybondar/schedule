@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 from aiogram import F
 
-from handlers.base_comands import router as base_commands_router
+from handlers.commands import router as command_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,7 +27,7 @@ async def main():
     dp.message.filter(F.from_user.id == admin)
     dp.callback_query.filter(F.from_user.id == admin)
 
-    dp.include_router(base_commands_router)
+    dp.include_router(command_router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

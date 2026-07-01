@@ -9,13 +9,13 @@ router = Router()
 async def start_cmd(message: Message):
     await message.answer("Бот запущено")
 
-@router.message(Command("site"))
-async def site(message: Message):
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+@router.message(Command("book_time"))
+async def open_schedule(message: Message):
+    button = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
             text="Відкрити сайт",
             web_app=WebAppInfo(url="https://uncrystallized-daisey-uninterwoven.ngrok-free.dev/")
         )]
     ])
 
-    await message.answer("Натисни кноопку", reply_markup=keyboard)
+    await message.answer("Open schedule", reply_markup=button)
