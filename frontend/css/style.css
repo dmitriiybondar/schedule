@@ -45,9 +45,11 @@ h3, h4 {
     border-radius: 0 8px 8px 0;
 }
 
-.segment-active {
+.segment.active {
     background-color: #5d5f67;
     border-radius: 8px;
+    border: none;
+    outline: none;
 }
 
 .time-buttons {
@@ -55,7 +57,6 @@ h3, h4 {
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     margin-top: 20px;
-    margin-bottom: 20px;
     width: 100%;
     height: max-content;
 }
@@ -72,9 +73,10 @@ h3, h4 {
     height: 40px;
 }
 
-.time:focus {
+.time.active {
     background-color: #007bff;
     border: none;
+    outline: none;
 }
 
 .comment {
@@ -83,6 +85,7 @@ h3, h4 {
     height: 35px;
     background-color: #2f2d34;
     border: none;
+    margin-top: 20px;
     padding-left: 10px;
     color: #FFFFFF;
 }
@@ -100,4 +103,6 @@ h3, h4 {
 .unactive-button {
     background-color: #2b2f36;
     color: #a0adb4;
+    pointer-events: none;
+    opacity: 0.6;
 }

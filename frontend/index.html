@@ -25,19 +25,19 @@
 
         <h4>Виберіть години для бронювання:</h4>
         <div class="time-period-buttons">
-            <button class="segment left-s segment-active">Ранкові</button>
-            <button class="segment">Денні</button>
-            <button class="segment right-s">Вечірні</button>
+            <button class="segment left-s active" data-period="morning">Ранкові</button>
+            <button class="segment" data-period="day">Денні</button>
+            <button class="segment right-s" data-period="evening">Вечірні</button>
         </div>
 
-        <div class="time-buttons">
+        <div class="time-buttons morning">
             <button class="time">9:00</button>
             <button class="time">10:00</button>
             <button class="time">11:00</button>
             <button class="time">12:00</button>
         </div>
 
-        <div class="time-buttons hidden">
+        <div class="time-buttons day">
             <button class="time">13:00</button>
             <button class="time">14:00</button>
             <button class="time">15:00</button>
@@ -46,7 +46,7 @@
             <button class="time">18:00</button>
         </div>
 
-        <div class="time-buttons hidden">
+        <div class="time-buttons evening">
             <button class="time">19:00</button>
             <button class="time">20:00</button>
             <button class="time">21:00</button>
