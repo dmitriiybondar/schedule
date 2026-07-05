@@ -94,16 +94,44 @@ function setupSubmitButton() {
             return; 
         }
 
-        comment = input.value;
+        button.classList.add("unactive-button");
+        button.innerText = "Відправка..."
 
-        console.log("Готово до відправки:", {
+        const bookingData = {
             date: date,
             time: time,
-            comment: comment
-        });
+            comment: input.value,
+            init: tg.initData
+        };
 
+        sendData(button, bookingData);
         resetForm();
     });
+}
+
+async function sendData(button, data) {
+    try {
+        const response = await fetch("посилання", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            window.Telegram.WebApp.close();
+        } else {
+            console.error("Помилка на сервері: ", response.status);
+            button.classList.remove("unactive-button");
+            button.innerText = "Підтвердити бронювання";
+        }
+    }
+    catch (error) {
+        console.error("Помилка мережі:", error);
+        button.classList.remove("unactive-button");
+        button.innerText = "Підтвердити бронювання";
+    }
 }
 
 function resetForm() {
