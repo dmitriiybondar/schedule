@@ -4,6 +4,8 @@ let comment = "";
 let selectedPeriod = "morning";
 let calendar;
 
+const tg = window.Telegram.WebApp;
+
 document.addEventListener("DOMContentLoaded", function() {
     initCalendar();
     setupPeriodButtons();
@@ -101,7 +103,7 @@ function setupSubmitButton() {
             date: date,
             time: time,
             comment: input.value,
-            init: tg.initData
+            initData: tg.initData
         };
 
         sendData(button, bookingData);
@@ -111,7 +113,7 @@ function setupSubmitButton() {
 
 async function sendData(button, data) {
     try {
-        const response = await fetch("посилання", {
+        const response = await fetch("/api/booking", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
