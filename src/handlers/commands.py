@@ -13,9 +13,20 @@ async def start_cmd(message: Message):
 async def open_schedule(message: Message):
     button = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
-            text="Відкрити сайт",
+            text="Відкрити застосунок",
             web_app=WebAppInfo(url="https://uncrystallized-daisey-uninterwoven.ngrok-free.dev/")
         )]
     ])
 
-    await message.answer("Open schedule", reply_markup=button)
+    await message.answer("Забронювати час", reply_markup=button)
+
+@router.message(Command("admin"))
+async def open_admin(message: Message):
+    button = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(
+            text="Відкрити застосунок",
+            web_app=WebAppInfo(url="https://uncrystallized-daisey-uninterwoven.ngrok-free.dev/admin/dashboard/index.html")
+        )]
+    ])
+
+    await message.answer("Відкрити адмінську панель", reply_markup=button)
