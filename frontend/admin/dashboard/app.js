@@ -1,11 +1,8 @@
 let date = "";
 
-document.addEventListener("DOMContentLoaded", function() {
-    initCalendar();
-    checkButtonActivity();
-
-    document.querySelector(".submit").addEventListener("click", redirect);
-});
+initCalendar();
+checkButtonActivity();
+document.querySelector(".submit").addEventListener("click", redirect);
 
 function initCalendar() {
     calendar = flatpickr(".calendar", {

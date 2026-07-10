@@ -6,13 +6,11 @@ let calendar;
 
 const tg = window.Telegram.WebApp;
 
-document.addEventListener("DOMContentLoaded", function() {
-    initCalendar();
-    setupPeriodButtons();
-    showTimeButtons(selectedPeriod);
-    setupTimeButtons();
-    setupSubmitButton();
-});
+initCalendar();
+setupPeriodButtons();
+showTimeButtons(selectedPeriod);
+setupTimeButtons();
+setupSubmitButton();
 
 function initCalendar() {
     calendar = flatpickr(".calendar", {
@@ -36,9 +34,9 @@ function initCalendar() {
 function setupPeriodButtons() {
     const periodButtons = document.querySelectorAll(".segment");
 
-    periodButtons.forEach(function(button) {
+    periodButtons.forEach((button) => {
         button.addEventListener("click", function() {
-            periodButtons.forEach(function(btn) {
+            periodButtons.forEach(btn => {
                 btn.classList.remove("active");
             });
 
@@ -51,7 +49,7 @@ function setupPeriodButtons() {
 }
 
 function showTimeButtons(period) {
-    document.querySelectorAll(".time-buttons").forEach(function(el) {
+    document.querySelectorAll(".time-buttons").forEach(el => {
         el.classList.add("hidden")
    });
 
@@ -64,9 +62,9 @@ function showTimeButtons(period) {
 function setupTimeButtons() {
     const timeButtons = document.querySelectorAll(".time");
 
-    timeButtons.forEach(function(button) {
+    timeButtons.forEach((button) => {
         button.addEventListener("click", function() {
-            timeButtons.forEach(function(btn) {
+            timeButtons.forEach(btn => {
                 btn.classList.remove("active");
             });
 
@@ -91,7 +89,7 @@ function setupSubmitButton() {
     const button = document.querySelector(".submit");
     const input = document.querySelector(".comment");
 
-    button.addEventListener("click", function() {
+    button.addEventListener("click", () => {
         if (button.classList.contains("unactive-button")) {
             return; 
         }
@@ -145,12 +143,12 @@ function resetForm() {
     const input = document.querySelector(".comment").value = "";
     calendar.clear();
 
-    document.querySelectorAll(".segment").forEach(function(btn) {
+    document.querySelectorAll(".segment").forEach(btn => {
         btn.classList.remove("active");
     });
     document.querySelector('.segment[data-period="morning"]').classList.add("active");
 
-    document.querySelectorAll(".time").forEach(function(btn) {
+    document.querySelectorAll(".time").forEach(btn => {
         btn.classList.remove("active")
     });
 
