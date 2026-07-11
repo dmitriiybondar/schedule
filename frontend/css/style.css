@@ -1,4 +1,5 @@
 * {
+    box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -100,8 +101,14 @@ h3, h4, p {
     border-radius: 12px;
     background-color: #007bff;
     color: #FFFFFF;
-    height: 35px;
+    height: 45px;
     margin-top: 20px;
+    font-size: 1.1em;
+}
+
+.book-btn {
+    height: 35px;
+    font-size: 1em;
 }
 
 .unactive-button {
@@ -149,7 +156,7 @@ header {
     font-size: 1.1em;
 }
 
-.time-boxes {   
+.slot-canvas {   
     justify-content: start;
     align-items: start;
     width: 90%;
@@ -232,7 +239,98 @@ header {
 .add-slot-button {
     position: fixed;
     width: 90%;
-    height: 45px;
-    font-size: 1.1em;
     bottom: 20px;
+}
+
+
+/* ========== TIME WINDOW =========== */
+
+.overlay {
+    position: fixed;
+    top: 0; right: 0; left: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.time-window {
+    position: fixed;
+    left: 0; right: 0; bottom: -100%; 
+    height: 50vh;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: #1c1c1e;
+    color: #FFFFFF;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    transition: bottom 0.3s ease, height 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.time-window.active {
+    bottom: 0;
+} 
+
+.time-window h3 {
+    margin: 0;
+}
+
+.time-picker-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+}
+
+.time-box {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #2b2d31;
+    padding: 10px;
+    padding-top: 0;
+    border-radius: 15px;
+}
+
+.time-box label {
+    color: #8c8b8e;
+    font-size: 0.9em;
+    margin: 5px;
+
+}
+
+.divider {
+    font-size: 1.3em;
+    font-weight: 600;
+    margin: 10px;
+}
+
+.time-input {
+    width: 100px;
+    background: #2c2c2e;
+    color: #FFFFFF;
+    font-size: 1.5em;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-radius: 10px;
+    font-family: monospace;
+}
+
+.save-time {
+    width: 90%;
 }

@@ -78,7 +78,7 @@ function setupTimeButtons() {
 function checkButtonActivity() {
     const button = document.querySelector(".submit");
 
-    if (date !== "" && time !== "") {
+    if (date && time) {
         button.classList.remove("unactive-button");
     } else {
         button.classList.add("unactive-button");

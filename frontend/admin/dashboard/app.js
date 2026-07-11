@@ -34,7 +34,7 @@ function initCalendar() {
 function checkButtonActivity() {
     const button = document.querySelector(".submit");
 
-    if (fullDate !== "") {
+    if (fullDate) {
         button.classList.remove("unactive-button");
     } else {
         button.classList.add("unactive-button");
