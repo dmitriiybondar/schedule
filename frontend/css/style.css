@@ -124,7 +124,7 @@ header {
 
 .back, .save {
     color: #176faf;
-    font-size: 1.2em;
+    font-size: 1.1em;
     margin-top: 40px;
 }
 
@@ -140,13 +140,13 @@ header {
     margin-top: 40px;
     margin-bottom: 10px;
     font-weight: 600;
-    font-size: 1.3em;
+    font-size: 1.2em;
 }
 
 .free-time {
     align-self: start;
     margin-left: 5%;
-    font-size: 1.2em;
+    font-size: 1.1em;
 }
 
 .time-boxes {   
@@ -167,7 +167,7 @@ header {
 }
 
 .time-box p {
-    font-size: 1.3em;
+    font-size: 1.2em;
     font-weight: 500;
 }
 
@@ -233,6 +233,6 @@ header {
     position: fixed;
     width: 90%;
     height: 45px;
-    font-size: 1.2em;
+    font-size: 1.1em;
     bottom: 20px;
 }
