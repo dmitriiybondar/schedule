@@ -1,4 +1,7 @@
-let date = "";
+let fullDate = "";
+let year = "";
+let weekday = "";
+let dateMonth = "";
 
 initCalendar();
 checkButtonActivity();
@@ -16,7 +19,13 @@ function initCalendar() {
         yearSelectorType: "static",
 
         onChange: function(selectedDates, dateStr) {
-            date = dateStr;
+            fullDate = selectedDates[0];
+
+            dateMonth = fullDate.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
+            weekday = fullDate.toLocaleDateString('uk-UA', { weekday: 'long' });
+            weekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+            year = fullDate.getFullYear();
+            
             checkButtonActivity();
         }
     });
@@ -25,7 +34,7 @@ function initCalendar() {
 function checkButtonActivity() {
     const button = document.querySelector(".submit");
 
-    if (date !== "") {
+    if (fullDate !== "") {
         button.classList.remove("unactive-button");
     } else {
         button.classList.add("unactive-button");
@@ -39,5 +48,12 @@ function redirect() {
         return;
     }
 
+    const fullDateInfo = {
+        year: year,
+        dateMonth: dateMonth,
+        weekday: weekday
+    }
+
+    sessionStorage.setItem("dateInfo", JSON.stringify(fullDateInfo));
     window.location.href = "/admin/timescale/index.html"
 }
