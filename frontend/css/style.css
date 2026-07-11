@@ -155,7 +155,7 @@ header {
     width: 90%;
 }
 
-.time-box {
+.slot {
     display: flex;
     align-items: center;
     width: 100%;
@@ -166,7 +166,7 @@ header {
     padding-left: 15px;
 }
 
-.time-box p {
+.slot p {
     font-size: 1.2em;
     font-weight: 500;
 }

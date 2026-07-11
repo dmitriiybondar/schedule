@@ -1,9 +1,10 @@
 printDate();
 backButton();
 addButton();
+deleteSlot();
 
 function backButton() {
-    let button = document.querySelector(".back");
+    const button = document.querySelector(".back");
 
     button.addEventListener("click", () => {
         window.location.href = "/admin/dashboard/index.html"
@@ -11,7 +12,7 @@ function backButton() {
 }
 
 function addButton() {
-    let button = document.querySelector(".add-slot-button");
+    const button = document.querySelector(".add-slot-button");
 
     button.addEventListener("click", () => {
         window.location.href = "/admin/timer/index.html"
@@ -19,7 +20,7 @@ function addButton() {
 }
 
 function printDate() {
-    let savedInfo = sessionStorage.getItem("dateInfo");
+    const savedInfo = sessionStorage.getItem("dateInfo");
     let text = document.querySelector(".date");
 
     if (savedInfo) {
@@ -31,4 +32,17 @@ function printDate() {
         
         text.textContent = `${weekday}, ${dateMonth} ${year}`;
     }
+}
+
+function deleteSlot() {
+    const deleteButtons = document.querySelectorAll(".delete-button");
+
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", el => {
+            const parentSlot = el.target.closest(".slot");
+            if (parentSlot) {
+                parentSlot.remove();
+            }
+        });
+    });
 }
