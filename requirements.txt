@@ -5,3 +5,4 @@ apscheduler
 fastapi
 uvicorn
 pydantic
+sqlalchemy
