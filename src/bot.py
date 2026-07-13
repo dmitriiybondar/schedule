@@ -9,7 +9,9 @@ from aiogram import Bot, Dispatcher
 from aiogram import F
 
 from database.connection import engine, Base
+from handlers.user import router as user_router
 from handlers.commands import router as command_router
+from handlers.schedule import router as schedule_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -35,7 +37,9 @@ async def main():
     dp.message.filter(F.from_user.id == admin)
     dp.callback_query.filter(F.from_user.id == admin)
 
+    dp.include_router(user_router)
     dp.include_router(command_router)
+    dp.include_router(schedule_router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

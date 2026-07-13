@@ -5,9 +5,10 @@ class User(Base):
     __tablename__ = "users"
 
     telegram_id = Column(BigInteger, primary_key=True)
-    username = Column(String, nullable=False)
+    username = Column(String)
+    phone_number = Column(String, nullable=False)
     full_name = Column(String, nullable=False)
-    role = Column(String, nullable=False)
+    role = Column(String, default="client")
 
 class Slot(Base):
     __tablename__ = "slots"
