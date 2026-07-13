@@ -2,11 +2,13 @@ import os
 import sys
 import asyncio
 import logging 
+import database.models # НЕ ВИДАЛЯТИ
 
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 from aiogram import F
 
+from database.connection import engine, Base
 from handlers.commands import router as command_router
 
 logging.basicConfig(
@@ -17,8 +19,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
 async def main():
     load_dotenv()
+
+    await init_db()
 
     admin = int(os.getenv("ADMIN_USER_ID"))
     bot = Bot(token=os.getenv("BOT_TOKEN"))
