@@ -1,0 +1,19 @@
+from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey
+from database.connection import Base
+
+class User(Base):
+    __tablename__ = "users"
+
+    telegram_id = Column(BigInteger, primary_key=True)
+    username = Column(String, nullable=False)
+    full_name = Column(String, nullable=False)
+    role = Column(String, nullable=False)
+
+class Slot(Base):
+    __tablename__ = "slots"
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    user_id = Column(BigInteger, ForeignKey("users.telegram_id", ondelete="CASCADE"))
+    date = Column(String, nullable=False)
+    start_time = Column(String, nullable=False)
+    end_time = Column(String, nullable=False)
