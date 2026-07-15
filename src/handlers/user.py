@@ -3,8 +3,8 @@ from aiogram.filters import Command
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.fsm.context import FSMContext
 
-from states.user_states import SignUp
-from database.crud.users import create_user
+from states.user_states import SignUp, ChangeParams
+from database.crud.users import create_user, change_params
 from database.connection import AsyncSessionLocal
 from keyboards import get_schedule_keyboard
 
@@ -62,5 +62,43 @@ async def contact_success(message: Message, state: FSMContext):
     
 
 @router.message(SignUp.phone_number)
-async def contact_fail(message: Message, state: FSMContext):
+async def contact_fail(message: Message):
     await message.answer("Для реєстрації необхідно натиснути кнопку \"Поділитись номером\". Не намагайтесь вводити текст вручну")
+
+
+
+@router.message(Command("change_name"))
+async def change_name(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+
+    await state.update_data(
+        telegram_id=user_id,
+        column = "full_name"    
+    )
+    await state.set_state(ChangeParams.value)
+    await message.answer("Введіть нове ім'я")
+
+# @router.message(Command("change_role"))
+# async def change_name(message: Message, state: FSMContext):
+#     user_id = message.from_user.id
+
+#     await state.update_data(
+#         telegram_id=user_id,
+#         column = "role"    
+#     )
+#     await state.set_state(ChangeParams.value)
+#     await message.answer("Введіть нову роль")
+
+@router.message(ChangeParams.value)
+async def new_data(message: Message, state: FSMContext):
+    data = await state.get_data()
+
+    value = message.text
+    column = data["column"]
+    telegram_id = data["telegram_id"]
+
+    async with AsyncSessionLocal() as session:
+        await change_params(session, telegram_id, column, value)
+
+    await message.answer("Значення успішно змінено")
+    await state.clear()

@@ -29,8 +29,8 @@ async def get_user(session: AsyncSession, telegram_id: int) -> User | None:
     return result.scalar_one_or_none()
 
 
-async def change_role(session: AsyncSession, telegram_id: int, new_role: str):
-    stmt = update(User).where(User.telegram_id == telegram_id).values(role = new_role)
+async def change_params(session: AsyncSession, telegram_id: int, column: str, value: str):
+    stmt = update(User).where(User.telegram_id == telegram_id).values({column: value})
     
     await session.execute(stmt)
     await session.commit()
