@@ -1,14 +1,18 @@
 from aiogram import Router, F
 from aiogram.filters import Command
-from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.fsm.context import FSMContext
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from states.user_states import SignUp, ChangeParams
 from database.crud.users import create_user, change_params
 from database.connection import AsyncSessionLocal
+
+from middlewares.database import DbSessionMiddleware
+from states.user_states import SignUp, ChangeParams
 from keyboards import get_schedule_keyboard
 
 router = Router()
+router.message.middleware(DbSessionMiddleware(session_pool=AsyncSessionLocal))
 
 async def sign_up(message: Message, state: FSMContext, next_action: str = None):
     user_id = message.from_user.id
@@ -40,19 +44,17 @@ async def full_name(message: Message, state: FSMContext):
     await message.answer("Надайте всій номер телефону", reply_markup=contact_keyboard)
 
 
-@router.message(SignUp.phone_number, F.contact)
-async def contact_success(message: Message, state: FSMContext):
-    phone = message.contact.phone_number
+@router.message(SignUp.phone_number, F.contact, flags={"use_db": True})
+async def contact_success(message: Message, state: FSMContext, session: AsyncSession):
     data = await state.get_data()
 
+    phone = message.contact.phone_number
     telegram_id = int(data["telegram_id"])
     username = data["username"]
     full_name = data["full_name"]
     next_action = data["next_action"]
 
-    async with AsyncSessionLocal() as session:
-        await create_user(session, telegram_id, username, full_name, phone)
-
+    await create_user(session, telegram_id, username, full_name, phone)
     await message.answer("Реєстрація успішно завершена")
 
     if next_action == "open_schedule":
@@ -89,16 +91,15 @@ async def change_name(message: Message, state: FSMContext):
 #     await state.set_state(ChangeParams.value)
 #     await message.answer("Введіть нову роль")
 
-@router.message(ChangeParams.value)
-async def new_data(message: Message, state: FSMContext):
+@router.message(ChangeParams.value, flags={"use_db": True})
+async def new_data(message: Message, state: FSMContext, session: AsyncSession):
     data = await state.get_data()
 
     value = message.text
     column = data["column"]
     telegram_id = data["telegram_id"]
 
-    async with AsyncSessionLocal() as session:
-        await change_params(session, telegram_id, column, value)
+    await change_params(session, telegram_id, column, value)
 
     await message.answer("Значення успішно змінено")
     await state.clear()
