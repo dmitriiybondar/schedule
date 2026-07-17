@@ -1,5 +1,12 @@
-from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey
+import enum
+
+from sqlalchemy import Column, BigInteger, String, ForeignKey
+from sqlalchemy.types import Enum
 from database.connection import Base
+
+class UserRole(enum.StrEnum):
+    USER = "user"
+    ADMIN = "admin"
 
 class User(Base):
     __tablename__ = "users"
@@ -8,7 +15,7 @@ class User(Base):
     username = Column(String)
     phone_number = Column(String, nullable=False)
     full_name = Column(String, nullable=False)
-    role = Column(String, default="client")
+    role = Column(Enum(UserRole), default=UserRole.USER)
 
 class Slot(Base):
     __tablename__ = "slots"
