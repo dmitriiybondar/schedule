@@ -135,8 +135,7 @@ function addSlot(startTime, endTime) {
 async function sendDataAddSlot(data) {
     try {
         const initData = tg.initData;
-        const url = "https://uncrystallized-daisey-uninterwoven.ngrok-free.dev/create"
-        const response = await fetch(url, {
+        const response = await fetch("/api/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json", 

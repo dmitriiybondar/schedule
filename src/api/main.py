@@ -10,16 +10,16 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # В продакшні краще вказати конкретний домен
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  # В продакшні краще вказати конкретний домен
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 
-app.include_router(host_slot_router)
+app.include_router(host_slot_router, prefix="/api")
 
 
 # BOT_TOKEN = os.getenv("BOT_TOKEN")
