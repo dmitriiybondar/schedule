@@ -26,8 +26,9 @@ class Slot(Base):
     __tablename__ = "slots"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(BigInteger, ForeignKey("users.telegram_id", ondelete="CASCADE"), nullable=False)
+    host_id = Column(BigInteger, ForeignKey("users.telegram_id", ondelete="CASCADE"), nullable=False)
     date = Column(String, nullable=False)
     start_time = Column(String, nullable=False)
     end_time = Column(String, nullable=False)
     state = Column(Enum(SlotState), default=SlotState.ACTIVE, nullable=False)
+    client_id = Column(BigInteger)

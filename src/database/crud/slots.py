@@ -4,7 +4,7 @@ from ..models import Slot, SlotState
 
 async def create_slot(session: AsyncSession, telegram_id: int, date: str, start_time: str, end_time: str):
     new_slot = Slot(
-        user_id = telegram_id,
+        host_id = telegram_id,
         date = date,
         start_time = start_time,
         end_time = end_time,
@@ -30,3 +30,9 @@ async def change_state(session: AsyncSession, slot_id: int, new_state: SlotState
 
     await session.execute(stmt)
     await session.commit(stmt)
+
+async def book_slot(session: AsyncSession, slot_id: int, user_id: int):
+    stmt = update(Slot).where(Slot.id == slot_id).values(state = SlotState.BOOKED, client_id = user_id)
+
+    await session.execute(stmt)
+    await session.commit()
