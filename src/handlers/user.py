@@ -4,12 +4,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database.crud.users import create_user, change_params
-from database.connection import AsyncSessionLocal
+from src.database.crud.users import create_user, change_params
+from src.database.connection import AsyncSessionLocal
 
-from middlewares.database import DbSessionMiddleware
-from states.user_states import SignUp, ChangeParams
-from keyboards import get_schedule_keyboard
+from src.middlewares.database import DbSessionMiddleware
+from src.states.user_states import SignUp, ChangeParams
+from src.keyboards import get_schedule_keyboard
 
 router = Router()
 router.message.middleware(DbSessionMiddleware(session_pool=AsyncSessionLocal))

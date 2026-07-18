@@ -19,4 +19,4 @@ COPY --chown=botuser:botuser . .
 
 USER botuser
 
-CMD ["python", "src/bot.py"]
+CMD ["python", "-m", "src.bot"]

@@ -1,10 +1,12 @@
+const tg = window.Telegram.WebApp;
+
 printDate();
 backButton();
 addButton();
 deleteSlot();
 checkButtonActivity();
 inputDataChange();
-addSlot();
+addSlotButton();
 
 function backButton() {
     const button = document.querySelector(".back");
@@ -80,41 +82,78 @@ function inputDataChange() {
     endTime.addEventListener("input", checkButtonActivity);
 }
 
-function addSlot() {
-    const slotCanvas = document.querySelector(".slot-canvas");
+function addSlotButton() {
     const button = document.querySelector(".save-time");
+    const fullDate = sessionStorage.getItem("dateInfo");
 
     button.addEventListener("click", () => {
-        const overlay = document.querySelector(".overlay");
-        const timeWindow = document.querySelector(".time-window");
-
         const startTime = document.querySelector(".start-time").value;
         const endTime = document.querySelector(".end-time").value;
-
-        if (startTime && endTime) {
-            const newSlot = `
-                <div class="slot">
-                    <p>${startTime}-${endTime}</p>
-
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider"></span>
-                    </label>
-
-                    <button class="delete-button">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                        </svg>
-                    </button>
-                </div>
-            `;
-            
-            slotCanvas.insertAdjacentHTML("beforeend", newSlot);
-            overlay.classList.remove("active");
-            timeWindow.classList.remove("active");
+        
+        const data = {
+            date: fullDate,
+            start_time: startTime,
+            end_time: endTime
         }
+
+        sendDataAddSlot(data);
     });
+}
+
+function addSlot(startTime, endTime) {
+    const slotCanvas = document.querySelector(".slot-canvas");
+    const overlay = document.querySelector(".overlay");
+    const timeWindow = document.querySelector(".time-window");
+    
+    if (startTime && endTime) {
+        const newSlot = `
+            <div class="slot">
+                <p>${startTime}-${endTime}</p>
+
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+
+                <button class="delete-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                </button>
+            </div>
+        `;
+        
+        slotCanvas.insertAdjacentHTML("beforeend", newSlot);
+        overlay.classList.remove("active");
+        timeWindow.classList.remove("active");
+    }
+}
+
+async function sendDataAddSlot(data) {
+    try {
+        const initData = tg.initData;
+        const url = "https://uncrystallized-daisey-uninterwoven.ngrok-free.dev/create"
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+                "X-Telegram-Init-Data": initData,
+                "ngrok-skip-browser-warning": "true"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            addSlot(data.start_time, data.end_time);
+            console.log("працює")
+        } else {
+            console.error("Помилка на сервері: ", response.status);
+        }
+    }
+    catch (error) {
+        console.error("Помилка мережі:", error);
+    }
 }

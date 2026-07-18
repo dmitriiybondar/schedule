@@ -2,11 +2,11 @@ import enum
 
 from sqlalchemy import Column, BigInteger, String, ForeignKey
 from sqlalchemy.types import Enum
-from database.connection import Base
+from .connection import Base
 
 class UserRole(enum.StrEnum):
     USER = "user"
-    ADMIN = "admin"
+    HOST = "host"
 
 class SlotState(enum.StrEnum):
     ACTIVE = "active"

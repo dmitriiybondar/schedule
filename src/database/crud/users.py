@@ -1,6 +1,7 @@
 from sqlalchemy import select, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from ..models import User, UserRole
+
+from src.database.models import User, UserRole
 
 async def create_user(session: AsyncSession, telegram_id: int, username: str, full_name: str, phone_number: int,  role: UserRole = None):
     new_user = User(

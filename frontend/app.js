@@ -113,14 +113,12 @@ async function sendData(button, data) {
     try {
         const response = await fetch("/api/booking", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: {"Content-Type": "application/json",},
             body: JSON.stringify(data)
         });
 
         if (response.ok) {
-            window.Telegram.WebApp.close();
+            tg.close();
         } else {
             console.error("Помилка на сервері: ", response.status);
             button.classList.remove("unactive-button");

@@ -3,10 +3,10 @@ from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
-from database.connection import AsyncSessionLocal
-from database.crud.users import get_user
-from keyboards import get_schedule_keyboard
-from .user import sign_up
+from src.database.connection import AsyncSessionLocal
+from src.database.crud.users import get_user
+from src.keyboards import get_schedule_keyboard
+from src.handlers.user import sign_up
 
 router = Router()
 
