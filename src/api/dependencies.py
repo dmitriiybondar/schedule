@@ -1,5 +1,4 @@
 from fastapi import Header, HTTPException
-from aiogram import Bot
 from aiogram.utils.web_app import safe_parse_webapp_init_data
 
 from src.bot import BOT_TOKEN

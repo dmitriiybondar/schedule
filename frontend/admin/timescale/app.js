@@ -53,13 +53,45 @@ function deleteSlot() {
     slotCanvas.addEventListener("click", (event) => {
         const deleteButton = event.target.closest(".delete-button");
 
+
         if (deleteButton) {
             const parentSlot = deleteButton.closest(".slot");
-            if (parentSlot) {
-                parentSlot.remove();
-            }
+            const slotId = parentSlot.dataset.slotId;
+            const data = {slot_id: Number(slotId)}
+            
+            sendDataDeleteSlot(data, parentSlot);
         }
     });
+}
+
+async function sendDataDeleteSlot(data, slot) {
+    try {
+        initData = tg.initData;
+
+        const response = await fetch("/api/delete", {
+            method: "Post",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Telegram-Init-Data": initData,
+                "ngrok-skip-browser-warning": "true"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            if (slot) {
+                slot.remove();
+                console.log("Слот успішно видалино");
+            }
+        } else {
+            const errorData = await response.json();
+            console.error("Статус помилки: ", response.status);
+            console.error("Деталі помилки: ", errorData);
+        }
+    }
+    catch (error) {
+        console.error("Помилка мережі:", error);
+    }
 }
 
 function checkButtonActivity() {
@@ -91,7 +123,7 @@ function addSlotButton() {
     button.addEventListener("click", () => {
         const date = String(dateInfo.date).padStart(2, '0');
         const month = String(dateInfo.month).padStart(2, '0');
-        const finalDate = `${date} - ${month} - ${dateInfo.year}`;
+        const finalDate = `${date}-${month}-${dateInfo.year}`;
 
         const startTime = document.querySelector(".start-time").value;
         const endTime = document.querySelector(".end-time").value;
@@ -106,14 +138,14 @@ function addSlotButton() {
     });
 }
 
-function addSlot(startTime, endTime) {
+function addSlot(startTime, endTime, slotId) {
     const slotCanvas = document.querySelector(".slot-canvas");
     const overlay = document.querySelector(".overlay");
     const timeWindow = document.querySelector(".time-window");
     
     if (startTime && endTime) {
         const newSlot = `
-            <div class="slot">
+            <div class="slot" data-slot-id=${slotId}>
                 <p>${startTime}-${endTime}</p>
 
                 <label class="switch">
@@ -152,9 +184,15 @@ async function sendDataAddSlot(data) {
         });
 
         if (response.ok) {
-            addSlot(data.start_time, data.end_time);
+            const result = await response.json()
+            const slotId = result.slot_id
+
+            addSlot(data.start_time, data.end_time, slotId);
+            console.log("Слот успішно додано");
         } else {
-            console.error("Помилка на сервері: ", response.status);
+            const errorData = await response.json();
+            console.error("Статус помилки: ", response.status);
+            console.error("Деталі помилки: ", errorData);
         }
     }
     catch (error) {

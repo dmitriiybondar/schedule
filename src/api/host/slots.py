@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.dependencies import get_telegram_id
@@ -13,14 +13,31 @@ class CreateSlotInfo(BaseModel):
     start_time: str
     end_time: str
 
+class DeleteSlotInfo(BaseModel):
+    slot_id: int
+
 @router.post("/create")
 async def create_slot_api(data: CreateSlotInfo, session: AsyncSession = Depends(get_db), host_id: int = Depends(get_telegram_id)):
-    await create_slot(
+    slot_id = await create_slot(
         session=session,
         telegram_id=host_id,
         date=data.date,
         start_time=data.start_time,
         end_time=data.end_time
     )
+
+    return {"ok": True, "slot_id": slot_id}
+
+
+@router.post("/delete")
+async def delete_slot_api(data: DeleteSlotInfo, session: AsyncSession = Depends(get_db), host_id: int = Depends(get_telegram_id)):
+    is_deleted = await delete_slot(
+        session=session,
+        slot_id=data.slot_id,
+        host_id=host_id
+    )
+
+    if not is_deleted:
+        raise HTTPException(status_code=404, detail="Слот не знайдено або він вам не належить")
 
     return {"ok": True}

@@ -10,16 +10,20 @@ async def create_slot(session: AsyncSession, telegram_id: int, date: str, start_
         start_time = start_time,
         end_time = end_time,
     )
-
     session.add(new_slot)
+
     await session.commit()
+    await session.refresh(new_slot)
+    
+    return new_slot.id
 
 
-async def delete_slot(session: AsyncSession, slot_id: int):
-    stmt = delete(Slot).where(Slot.id == slot_id)
+async def delete_slot(session: AsyncSession, slot_id: int, host_id: int):
+    stmt = delete(Slot).where(Slot.id == slot_id, Slot.host_id == host_id)
+    result = await session.execute(stmt)
 
-    await session.execute(stmt)
     await session.commit()
+    return result.rowcount > 0
 
 
 async def get_slot(session: AsyncSession, slot_id: int) -> Slot | None:
@@ -41,3 +45,10 @@ async def book_slot(session: AsyncSession, slot_id: int, user_id: int):
 
     await session.execute(stmt)
     await session.commit()
+
+
+async def get_by_id(session: AsyncSession, slot_id: int) -> Slot | None:
+    stmt = select(Slot).where(Slot.id == slot_id)
+    result = await session.execute(stmt)
+
+    return result.scalar_one_or_none()
