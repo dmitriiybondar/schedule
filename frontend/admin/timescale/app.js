@@ -1,3 +1,9 @@
+const slotStates = Object.freeze({
+    ACTIVE: "active",
+    BOOKED: "booked",
+    DISABLED: "disabled"
+});
+
 const tg = window.Telegram.WebApp;
 
 printDate();
@@ -7,6 +13,7 @@ deleteSlot();
 checkButtonActivity();
 inputDataChange();
 addSlotButton();
+changeState();
 
 function backButton() {
     const button = document.querySelector(".back");
@@ -189,6 +196,53 @@ async function sendDataAddSlot(data) {
 
             addSlot(data.start_time, data.end_time, slotId);
             console.log("Слот успішно додано");
+        } else {
+            const errorData = await response.json();
+            console.error("Статус помилки: ", response.status);
+            console.error("Деталі помилки: ", errorData);
+        }
+    }
+    catch (error) {
+        console.error("Помилка мережі:", error);
+    }
+}
+
+function changeState() {
+    const slotCanvas = document.querySelector(".slot-canvas");
+
+    slotCanvas.addEventListener("change", (event) => {
+        const checkbox = event.target.closest('.switch input');
+
+        if (checkbox) {
+            const parentSlot = checkbox.closest(".slot");
+            const slotId = parentSlot.dataset.slotId;
+            const state = checkbox.checked ? slotStates.ACTIVE : slotStates.DISABLED;
+            
+            const data = {
+                slot_id: Number(slotId),
+                state: state
+            };
+
+            sendDataChangeState(data);
+        }
+    });
+}
+
+async function sendDataChangeState(data) {
+    try {    
+        const initData = tg.initData;
+        const response = await fetch("/api/change-state", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+                "X-Telegram-Init-Data": initData,
+                "ngrok-skip-browser-warning": "true"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            console.log("Стан успішно змінено");
         } else {
             const errorData = await response.json();
             console.error("Статус помилки: ", response.status);

@@ -33,11 +33,11 @@ async def get_slot(session: AsyncSession, slot_id: int) -> Slot | None:
     return result.scalar_one_or_none()
 
 
-async def change_state(session: AsyncSession, slot_id: int, new_state: SlotState):
-    stmt = update(Slot).where(Slot.id == slot_id).values(state = new_state)
+async def change_state(session: AsyncSession, slot_id: int, new_state: SlotState, host_id: int):
+    stmt = update(Slot).where(Slot.id == slot_id, Slot.host_id == host_id).values(state = new_state)
 
     await session.execute(stmt)
-    await session.commit(stmt)
+    await session.commit()
 
 
 async def book_slot(session: AsyncSession, slot_id: int, user_id: int):
