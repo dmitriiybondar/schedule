@@ -42,7 +42,7 @@ function printDate() {
         let year = dateInfo.year;
         let dateMonth = dateInfo.dateMonth;
         let weekday = dateInfo.weekday;
-        
+
         text.textContent = `${weekday}, ${dateMonth} ${year}`;
     }
 }
@@ -84,14 +84,20 @@ function inputDataChange() {
 
 function addSlotButton() {
     const button = document.querySelector(".save-time");
-    const fullDate = sessionStorage.getItem("dateInfo");
+
+    const savedDate = sessionStorage.getItem("dateInfo");
+    const dateInfo = JSON.parse(savedDate);
 
     button.addEventListener("click", () => {
+        const date = String(dateInfo.date).padStart(2, '0');
+        const month = String(dateInfo.month).padStart(2, '0');
+        const finalDate = `${date} - ${month} - ${dateInfo.year}`;
+
         const startTime = document.querySelector(".start-time").value;
         const endTime = document.querySelector(".end-time").value;
         
         const data = {
-            date: fullDate,
+            date: finalDate,
             start_time: startTime,
             end_time: endTime
         }
@@ -147,7 +153,6 @@ async function sendDataAddSlot(data) {
 
         if (response.ok) {
             addSlot(data.start_time, data.end_time);
-            console.log("працює")
         } else {
             console.error("Помилка на сервері: ", response.status);
         }

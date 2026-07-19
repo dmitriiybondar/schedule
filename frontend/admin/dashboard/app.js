@@ -2,6 +2,8 @@ let fullDate = "";
 let year = "";
 let weekday = "";
 let dateMonth = "";
+let date = "";
+let month = "";
 
 initCalendar();
 checkButtonActivity();
@@ -25,6 +27,8 @@ function initCalendar() {
             weekday = fullDate.toLocaleDateString('uk-UA', { weekday: 'long' });
             weekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
             year = fullDate.getFullYear();
+            date = fullDate.getDate();
+            month = fullDate.getMonth() + 1;
             
             checkButtonActivity();
         }
@@ -51,7 +55,9 @@ function redirect() {
     const fullDateInfo = {
         year: year,
         dateMonth: dateMonth,
-        weekday: weekday
+        weekday: weekday,
+        date: date,
+        month: month
     }
 
     sessionStorage.setItem("dateInfo", JSON.stringify(fullDateInfo));
