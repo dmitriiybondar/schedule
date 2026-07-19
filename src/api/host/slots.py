@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.dependencies import get_telegram_id
 from src.database.connection import get_db
-from src.database.crud.slots import create_slot, delete_slot, change_state, book_slot, get_slot
+from src.database.crud.slots import create_slot, delete_slot, change_state, get_slots, book_slot, get_slot
 from src.database.models import SlotState
 
 router = APIRouter()
@@ -20,6 +20,7 @@ class DeleteSlotInfo(BaseModel):
 class StateChangeInfo(BaseModel):
     slot_id: int
     state: SlotState
+
 
 @router.post("/create")
 async def create_slot_api(data: CreateSlotInfo, session: AsyncSession = Depends(get_db), host_id: int = Depends(get_telegram_id)):
@@ -58,3 +59,14 @@ async def change_state_api(data: StateChangeInfo, session: AsyncSession = Depend
     )
 
     return {"ok": True}
+
+
+@router.get("/admin-slot-list/{date}")
+async def load_slots(date: str, session: AsyncSession = Depends(get_db), host_id: int = Depends(get_telegram_id)):
+    result = await get_slots(
+        session=session, 
+        host_id=host_id, 
+        date=date
+    )
+
+    return result

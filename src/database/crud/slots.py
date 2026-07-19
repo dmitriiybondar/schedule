@@ -33,6 +33,13 @@ async def get_slot(session: AsyncSession, slot_id: int) -> Slot | None:
     return result.scalar_one_or_none()
 
 
+async def get_slots(session: AsyncSession, host_id: int, date: str) -> list[Slot]:
+    stmt = select(Slot).where(Slot.host_id == host_id, Slot.date == date)
+    result = await session.execute(stmt)
+
+    return list(result.scalars().all())
+
+
 async def change_state(session: AsyncSession, slot_id: int, new_state: SlotState, host_id: int):
     stmt = update(Slot).where(Slot.id == slot_id, Slot.host_id == host_id).values(state = new_state)
 

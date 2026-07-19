@@ -6,7 +6,6 @@ const slotStates = Object.freeze({
 
 const tg = window.Telegram.WebApp;
 
-printDate();
 backButton();
 addButton();
 deleteSlot();
@@ -14,6 +13,35 @@ checkButtonActivity();
 inputDataChange();
 addSlotButton();
 changeState();
+
+document.addEventListener("DOMContentLoaded", () => {
+    printDate();
+    loadSlots();
+});
+
+function returnButtonHtml(startTime, endTime, slotId) {
+    const newSlot = `
+        <div class="slot" data-slot-id=${slotId}>
+            <p>${startTime}-${endTime}</p>
+
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+
+            <button class="delete-button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+            </button>
+        </div>
+    `;
+
+    return newSlot
+}
 
 function backButton() {
     const button = document.querySelector(".back");
@@ -151,25 +179,7 @@ function addSlot(startTime, endTime, slotId) {
     const timeWindow = document.querySelector(".time-window");
     
     if (startTime && endTime) {
-        const newSlot = `
-            <div class="slot" data-slot-id=${slotId}>
-                <p>${startTime}-${endTime}</p>
-
-                <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
-
-                <button class="delete-button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                    </svg>
-                </button>
-            </div>
-        `;
+        newSlot = returnButtonHtml(startTime, endTime, slotId);
         
         slotCanvas.insertAdjacentHTML("beforeend", newSlot);
         overlay.classList.remove("active");
@@ -217,7 +227,7 @@ function changeState() {
             const parentSlot = checkbox.closest(".slot");
             const slotId = parentSlot.dataset.slotId;
             const state = checkbox.checked ? slotStates.ACTIVE : slotStates.DISABLED;
-            
+
             const data = {
                 slot_id: Number(slotId),
                 state: state
@@ -252,4 +262,50 @@ async function sendDataChangeState(data) {
     catch (error) {
         console.error("Помилка мережі:", error);
     }
+}
+
+async function loadSlotsAPI() {
+    try {
+        const initData = tg.initData;
+
+        const savedDate = sessionStorage.getItem("dateInfo");
+        const dateInfo = JSON.parse(savedDate);
+        const date = String(dateInfo.date).padStart(2, '0');
+        const month = String(dateInfo.month).padStart(2, '0');
+        const finalDate = `${date}-${month}-${dateInfo.year}`;
+    
+        const response = await fetch(`/api/admin-slot-list/${finalDate}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Telegram-Init-Data": initData,
+                "ngrok-skip-browser-warning": true
+            }
+        });
+    
+        if (response.ok) {
+            const slots = await response.json();
+            console.log("Слоти успішно завантажено");
+
+            return slots;
+        } else {
+            const errorData = await response.json();
+            console.error("Статус помилки: ", response.status);
+            console.error("Деталі помилки: ", errorData);
+        }
+    }
+    catch (error) {
+        console.error("Помилка мережі:", error);
+    }
+}
+
+async function loadSlots() {
+    const slots = await loadSlotsAPI();
+
+    slots.forEach(slot => {
+        const startTime = slot.start_time;
+        const endTime = slot.end_time;
+        const slotId = slot.id;
+        addSlot(startTime, endTime, slotId);
+    });
 }
