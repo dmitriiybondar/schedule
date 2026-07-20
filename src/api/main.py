@@ -12,9 +12,6 @@ app = FastAPI()
 app.include_router(host_slot_router, prefix="/api")
 
 
-# BOT_TOKEN = os.getenv("BOT_TOKEN")
-# bot = Bot(token=BOT_TOKEN)
-
 # class BookingRequest(BaseModel):
 #     date: str
 #     time: str

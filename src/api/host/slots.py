@@ -14,9 +14,6 @@ class CreateSlotInfo(BaseModel):
     start_time: str
     end_time: str
 
-class DeleteSlotInfo(BaseModel):
-    slot_id: int
-
 class StateChangeInfo(BaseModel):
     slot_id: int
     state: SlotState
@@ -35,11 +32,11 @@ async def create_slot_api(data: CreateSlotInfo, session: AsyncSession = Depends(
     return {"ok": True, "slot_id": slot_id}
 
 
-@router.post("/delete")
-async def delete_slot_api(data: DeleteSlotInfo, session: AsyncSession = Depends(get_db), host_id: int = Depends(get_telegram_id)):
+@router.delete("/delete/{slot_id}")
+async def delete_slot_api(slot_id: int, session: AsyncSession = Depends(get_db), host_id: int = Depends(get_telegram_id)):
     is_deleted = await delete_slot(
         session=session,
-        slot_id=data.slot_id,
+        slot_id=slot_id,
         host_id=host_id
     )
 

@@ -92,25 +92,24 @@ function deleteSlot() {
         if (deleteButton) {
             const parentSlot = deleteButton.closest(".slot");
             const slotId = parentSlot.dataset.slotId;
-            const data = {slot_id: Number(slotId)}
+            const slot_id = Number(slotId)
             
-            sendDataDeleteSlot(data, parentSlot);
+            sendDataDeleteSlot(slot_id, parentSlot);
         }
     });
 }
 
-async function sendDataDeleteSlot(data, slot) {
+async function sendDataDeleteSlot(slot_id, slot) {
     try {
         initData = tg.initData;
 
-        const response = await fetch("/api/delete", {
-            method: "Post",
+        const response = await fetch(`/api/delete/${slot_id}`, {
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
                 "X-Telegram-Init-Data": initData,
                 "ngrok-skip-browser-warning": "true"
             },
-            body: JSON.stringify(data)
         });
 
         if (response.ok) {
