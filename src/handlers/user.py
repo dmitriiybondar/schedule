@@ -4,7 +4,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.crud.users import create_user, change_params
+from src.database.models import UserRole
+from src.database.crud.users import create_user, change_params, get_role, get_user, delete_user
 from src.database.connection import AsyncSessionLocal
 
 from src.middlewares.database import DbSessionMiddleware
@@ -80,16 +81,6 @@ async def change_name(message: Message, state: FSMContext):
     await state.set_state(ChangeParams.value)
     await message.answer("Введіть нове ім'я")
 
-# @router.message(Command("change_role"))
-# async def change_name(message: Message, state: FSMContext):
-#     user_id = message.from_user.id
-
-#     await state.update_data(
-#         telegram_id=user_id,
-#         column = "role"    
-#     )
-#     await state.set_state(ChangeParams.value)
-#     await message.answer("Введіть нову роль")
 
 @router.message(ChangeParams.value, flags={"use_db": True})
 async def new_data(message: Message, state: FSMContext, session: AsyncSession):
@@ -103,3 +94,34 @@ async def new_data(message: Message, state: FSMContext, session: AsyncSession):
 
     await message.answer("Значення успішно змінено")
     await state.clear()
+
+
+@router.message(Command("become_host"), flags={"use_db": True})
+async def become_host(message: Message, session: AsyncSession, state: FSMContext):
+    user_id = message.from_user.id
+    cur_row = await get_role(session, user_id)
+    user = await get_user(session, user_id)
+
+    if not user:
+        await message.answer("Спочатку вам необхідно пройти реєстрацію")
+        await sign_up(message, state)
+        return
+
+    if cur_row == UserRole.USER:
+        column = "role"
+        value = UserRole.HOST
+
+        await change_params(session, user_id, column, value)
+        await message.answer("Роль успішно змінено")
+
+    else:
+        await message.answer("Ви вже і так адмін")
+
+
+@router.message(Command("delete"), flags={"use_db": True})
+async def delete_userr(message: Message, session: AsyncSession):
+    user_id = message.from_user.id
+
+    await delete_user(session, user_id)
+    await message.answer("ok")
+

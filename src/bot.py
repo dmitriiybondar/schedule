@@ -10,6 +10,7 @@ from aiogram import F
 from src.database import models # НЕ ВИДАЛЯТИ
 from src.database.connection import engine, Base
 from src.handlers.user import router as user_router
+from src.handlers.host import router as host_router
 from src.handlers.commands import router as command_router
 from src.handlers.schedule import router as schedule_router
 
@@ -39,6 +40,7 @@ async def main():
     dp.callback_query.filter(F.from_user.id == admin)
 
     dp.include_router(user_router)
+    dp.include_router(host_router)
     dp.include_router(command_router)
     dp.include_router(schedule_router)
 

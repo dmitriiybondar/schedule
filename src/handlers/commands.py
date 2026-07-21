@@ -9,14 +9,3 @@ router = Router()
 async def start_cmd(message: Message):
     await message.answer("Бот запущено")
     
-
-@router.message(Command("admin"))
-async def open_admin(message: Message):
-    button = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(
-            text="Відкрити застосунок",
-            web_app=WebAppInfo(url="https://uncrystallized-daisey-uninterwoven.ngrok-free.dev/admin/dashboard/index.html")
-        )]
-    ])
-
-    await message.answer("Відкрити адмінську панель", reply_markup=button)
