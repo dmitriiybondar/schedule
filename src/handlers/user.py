@@ -10,7 +10,7 @@ from src.database.connection import AsyncSessionLocal
 
 from src.middlewares.database import DbSessionMiddleware
 from src.states.user_states import SignUp, ChangeParams
-from src.keyboards import get_schedule_keyboard
+from src.keyboards import get_schedule_keyboard, setup_schedule_keyboard
 
 router = Router()
 router.message.middleware(DbSessionMiddleware(session_pool=AsyncSessionLocal))
@@ -55,11 +55,22 @@ async def contact_success(message: Message, state: FSMContext, session: AsyncSes
     full_name = data["full_name"]
     next_action = data["next_action"]
 
-    await create_user(session, telegram_id, username, full_name, phone)
-    await message.answer("Реєстрація успішно завершена")
-
     if next_action == "open_schedule":
+        await create_user(session, telegram_id, username, full_name, phone)
+        await message.answer("Реєстрація успішно завершена")
         await message.answer("Забронювати час", reply_markup=get_schedule_keyboard())
+
+    elif next_action == "become_host":
+        role = UserRole.HOST
+        await create_user(session, telegram_id, username, full_name, phone, role)
+        await message.answer("Акаунт успішно створено та надано роль адміна")
+
+    elif next_action == "setup_schedule":
+        role = UserRole.HOST
+        await create_user(session, telegram_id, username, full_name, phone, role)
+        await message.answer("Налаштувати графік", reply_markup=setup_schedule_keyboard())
+    
+
 
     await state.clear()
     
@@ -104,7 +115,7 @@ async def become_host(message: Message, session: AsyncSession, state: FSMContext
 
     if not user:
         await message.answer("Спочатку вам необхідно пройти реєстрацію")
-        await sign_up(message, state)
+        await sign_up(message, state, next_action="become_host")
         return
 
     if cur_row == UserRole.USER:

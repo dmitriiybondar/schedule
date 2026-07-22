@@ -1,11 +1,10 @@
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 from aiogram.fsm.context import FSMContext
-from aiogram.dispatcher.flags import get_flag
 from typing import Callable, Dict, Any, Awaitable
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from src.database.crud.users import get_role
+from src.database.crud.users import get_role, get_user
 from src.database.models import UserRole
 from src.states.user_states import SignUp
 
@@ -21,17 +20,28 @@ class HostCheckMiddleware(BaseMiddleware):
     ) -> Any:
         
         state: FSMContext = data.get("state")
-        user = data.get("event_from_user")
+        tg_user = data.get("event_from_user")
 
-        if not user:
-            await event.answer("Щоб налаштувати розклад треба зареєструватись та змінити статус акаунту командою /become_host")
-            await state.set_state(SignUp.start_reg)
+        if not tg_user:
             return
-
-
-        user_id = user.id
+        
+        user_id = tg_user.id
         
         async with self.session_pool() as session:
+            user = await get_user(session, user_id)
+
+            if not user:
+                await state.update_data(
+                    telegram_id=user_id,
+                    username=tg_user.username,
+                    next_action="setup_schedule"
+                )
+                await event.answer("Для початку необхідно зареєструватись")
+                await event.answer("Введіть своє ПІБ")
+                await state.set_state(SignUp.full_name)
+
+                return
+            
             role = await get_role(session, user_id)
 
             if role != UserRole.HOST:

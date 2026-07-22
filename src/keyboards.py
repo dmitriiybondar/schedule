@@ -10,3 +10,13 @@ def get_schedule_keyboard():
     ])
     
     return link
+
+def setup_schedule_keyboard():
+    link = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(
+            text="Налаштувати графік",
+            web_app=WebAppInfo(url="https://uncrystallized-daisey-uninterwoven.ngrok-free.dev/admin/dashboard/index.html")
+        )]
+    ])
+    
+    return link

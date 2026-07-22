@@ -1,7 +1,7 @@
 from aiogram import Router
+from aiogram.types import Message
 from aiogram.filters import Command
-from aiogram.types.web_app_info import WebAppInfo
-from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.fsm.context import FSMContext
 
 router = Router()
 
@@ -9,3 +9,8 @@ router = Router()
 async def start_cmd(message: Message):
     await message.answer("Бот запущено")
     
+
+@router.message(Command("cancel"))
+async def start_cmd(message: Message, state: FSMContext):
+    await state.clear()
+    await message.answer("Дія скасована")
