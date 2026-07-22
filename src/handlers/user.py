@@ -1,7 +1,8 @@
+from enum import StrEnum
 from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.models import UserRole
@@ -11,9 +12,11 @@ from src.database.connection import AsyncSessionLocal
 from src.middlewares.database import DbSessionMiddleware
 from src.states.user_states import SignUp, ChangeParams
 from src.keyboards import get_schedule_keyboard, setup_schedule_keyboard
+from src.enums import RegActions
 
 router = Router()
 router.message.middleware(DbSessionMiddleware(session_pool=AsyncSessionLocal))
+
 
 async def sign_up(message: Message, state: FSMContext, next_action: str = None):
     user_id = message.from_user.id
@@ -55,22 +58,26 @@ async def contact_success(message: Message, state: FSMContext, session: AsyncSes
     full_name = data["full_name"]
     next_action = data["next_action"]
 
-    if next_action == "open_schedule":
-        await create_user(session, telegram_id, username, full_name, phone)
-        await message.answer("Реєстрація успішно завершена")
+    HOST_ACTIONS = {RegActions.BECOME_HOST, RegActions.SETUP_SCHEDULE}
+    role = UserRole.HOST if next_action in HOST_ACTIONS else UserRole.USER
+
+    await create_user(session, telegram_id, username, full_name, phone, role)
+    rmw_keyboard = ReplyKeyboardRemove()
+
+
+    if next_action == RegActions.OPEN_SCHEDULE:
+        await message.answer("Реєстрація успішно завершена", reply_markup=rmw_keyboard)
         await message.answer("Забронювати час", reply_markup=get_schedule_keyboard())
 
-    elif next_action == "become_host":
-        role = UserRole.HOST
-        await create_user(session, telegram_id, username, full_name, phone, role)
-        await message.answer("Акаунт успішно створено та надано роль адміна")
+    elif next_action == RegActions.BECOME_HOST:
+        await message.answer("Акаунт успішно створено та надано роль адміна", reply_markup=rmw_keyboard)
 
-    elif next_action == "setup_schedule":
-        role = UserRole.HOST
-        await create_user(session, telegram_id, username, full_name, phone, role)
+    elif next_action == RegActions.SETUP_SCHEDULE:
+        await message.answer("Акаунт успішно створено", reply_markup=ReplyKeyboardRemove())
         await message.answer("Налаштувати графік", reply_markup=setup_schedule_keyboard())
     
-
+    else:
+        await message.answer("Реєстрація завершена.", reply_markup=rmw_keyboard)
 
     await state.clear()
     
@@ -115,7 +122,7 @@ async def become_host(message: Message, session: AsyncSession, state: FSMContext
 
     if not user:
         await message.answer("Спочатку вам необхідно пройти реєстрацію")
-        await sign_up(message, state, next_action="become_host")
+        await sign_up(message, state, next_action=RegActions.BECOME_HOST)
         return
 
     if cur_row == UserRole.USER:

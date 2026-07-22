@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker
 from src.database.crud.users import get_role, get_user
 from src.database.models import UserRole
 from src.states.user_states import SignUp
+from src.enums import RegActions
 
 class HostCheckMiddleware(BaseMiddleware):
     def __init__(self, session_pool: async_sessionmaker):
@@ -34,7 +35,7 @@ class HostCheckMiddleware(BaseMiddleware):
                 await state.update_data(
                     telegram_id=user_id,
                     username=tg_user.username,
-                    next_action="setup_schedule"
+                    next_action=RegActions.SETUP_SCHEDULE
                 )
                 await event.answer("Для початку необхідно зареєструватись")
                 await event.answer("Введіть своє ПІБ")

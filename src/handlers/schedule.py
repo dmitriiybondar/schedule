@@ -7,6 +7,7 @@ from src.database.connection import AsyncSessionLocal
 from src.database.crud.users import get_user
 from src.keyboards import get_schedule_keyboard
 from src.handlers.user import sign_up
+from src.enums import RegActions
 
 router = Router()
 
@@ -22,4 +23,4 @@ async def open_schedule(message: Message, state: FSMContext):
 
     else:
         await message.answer("Для початку пройдіть реєстрацію. Вона проходиться один раз при першому бронюванні")
-        await sign_up(message, state, next_action = "open_schedule")
+        await sign_up(message, state, next_action=RegActions.OPEN_SCHEDULE)
